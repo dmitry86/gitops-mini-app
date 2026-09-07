@@ -1,0 +1,10 @@
+replicas: 2
+
+message: "Hello from GitOps!"
+
+image:
+  repository: nginx
+  tag: alpine
+
+service:
+  port: 80
