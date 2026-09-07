@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Football Dashboard</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+    background: #f5f5f5;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.card, form, table {
+    background: white;
+    padding: 16px;
+    border-radius: 10px;
+}
+
+.card strong {
+    font-size: 28px;
+    display: block;
+}
+
+form {
+    margin: 20px 0;
+}
+
+input {
+    padding: 8px;
+    margin: 5px;
+}
+
+button {
+    padding: 9px 16px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.win { font-weight: bold; }
+</style>
+</head>
+
+<body>
+
+<h1>⚽ Football Dashboard</h1>
+
+<div class="cards">
+    <div class="card">Matches<strong id="matches">0</strong></div>
+    <div class="card">Wins<strong id="wins">0</strong></div>
+    <div class="card">Player Goals<strong id="goals">0</strong></div>
+    <div class="card">Assists<strong id="assists">0</strong></div>
+</div>
+
+<h2>Add Match</h2>
+
+<form id="matchForm">
+    <input type="date" id="date" required>
+    <input placeholder="Opponent" id="opponent" required>
+    <input type="number" placeholder="Our score" id="ourScore" min="0" required>
+    <input type="number" placeholder="Opponent score" id="theirScore" min="0" required>
+    <input type="number" placeholder="Player goals" id="playerGoals" min="0" value="0">
+    <input type="number" placeholder="Assists" id="playerAssists" min="0" value="0">
+
+    <button>Add</button>
+</form>
+
+<h2>Matches</h2>
+
+<table>
+<thead>
+<tr>
+    <th>Date</th>
+    <th>Opponent</th>
+    <th>Score</th>
+    <th>Result</th>
+    <th>Goals</th>
+    <th>Assists</th>
+</tr>
+</thead>
+
+<tbody id="matchTable"></tbody>
+</table>
+
+<script>
+async function loadDashboard() {
+
+    const stats = await fetch('/api/stats').then(r => r.json());
+
+    document.getElementById('matches').textContent = stats.matches;
+    document.getElementById('wins').textContent = stats.wins;
+    document.getElementById('goals').textContent = stats.player_goals;
+    document.getElementById('assists').textContent = stats.player_assists;
+
+    const matches = await fetch('/api/matches').then(r => r.json());
+
+    const table = document.getElementById('matchTable');
+    table.innerHTML = '';
+
+    matches.forEach(m => {
+
+        let result = 'D';
+
+        if (m.our_score > m.opponent_score) result = 'W';
+        if (m.our_score < m.opponent_score) result = 'L';
+
+        table.innerHTML += `
+        <tr>
+            <td>${new Date(m.match_date).toLocaleDateString('en-AU')}</td>
+            <td>${m.opponent}</td>
+            <td>${m.our_score} - ${m.opponent_score}</td>
+            <td>${result}</td>
+            <td>${m.player_goals}</td>
+            <td>${m.player_assists}</td>
+        </tr>`;
+    });
+}
+
+document.getElementById('matchForm').addEventListener('submit', async e => {
+
+    e.preventDefault();
+
+    await fetch('/api/matches', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            match_date: date.value,
+            opponent: opponent.value,
+            our_score: Number(ourScore.value),
+            opponent_score: Number(theirScore.value),
+            player_goals: Number(playerGoals.value),
+            player_assists: Number(playerAssists.value)
+        })
+    });
+
+    e.target.reset();
+
+    playerGoals.value = 0;
+    playerAssists.value = 0;
+
+    loadDashboard();
+});
+
+loadDashboard();
+</script>
+
+</body>
+</html>
