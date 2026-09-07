@@ -1,6 +1,6 @@
 replicas: 2
 
-message: "Hello from GitOps!"
+message: "Hello from GitOps! Updated from my laptop!!!"
 
 image:
   repository: nginx
