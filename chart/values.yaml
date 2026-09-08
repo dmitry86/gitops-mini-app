@@ -1,13 +1,21 @@
-replicas: 2
+frontend:
+  replicas: 2
+  image:
+    repository: ghcr.io/dmitry86/gitops-mini-app-frontend
+    tag: "7f67abd21edce3771d521e428e0b67c38dbc29bb"
 
-message: "Hello from GitOps! Updated from my laptop!!!"
+backend:
+  replicas: 1
+  image:
+    repository: ghcr.io/dmitry86/gitops-mini-app-backend
+    tag: "7f67abd21edce3771d521e428e0b67c38dbc29bb"
 
-image:
-  repository: nginx
-  tag: alpine
-
-service:
-  port: 80
+postgres:
+  image: postgres:17-alpine
+  database: football
+  user: football
+  storage: 1Gi
+  storageClass: local-path
 
 ingress:
   enabled: true

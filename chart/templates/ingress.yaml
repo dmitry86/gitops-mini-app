@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}
+  name: mini-app
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   rules:
@@ -12,7 +12,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}
+                name: frontend
                 port:
-                  number: {{ .Values.service.port }}
+                  number: 80
 {{- end }}
