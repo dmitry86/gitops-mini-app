@@ -1,4 +1,5 @@
 import os
+from contextlib import closing
 from flask import Flask, request, jsonify
 import psycopg2
 import psycopg2.extras
@@ -36,6 +37,21 @@ def init_db():
 
 @app.route("/health")
 def health():
+    return {"status": "ok"}
+
+@app.route("/ready")
+def ready():
+    try:
+        with closing(psycopg2.connect(
+            DATABASE_URL,
+            connect_timeout=2,
+            options="-c statement_timeout=2000",
+        )) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1")
+    except psycopg2.Error:
+        return {"status": "unavailable"}, 503
+
     return {"status": "ok"}
 
 @app.route("/api/matches", methods=["GET"])
