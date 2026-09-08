@@ -41,12 +41,30 @@ spec:
                   name: football-db
                   key: DATABASE_URL
 
-          readinessProbe:
+          startupProbe:
             httpGet:
               path: /health
               port: 8000
-            initialDelaySeconds: 2
             periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 24
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 2
+            successThreshold: 1
 
 ---
 apiVersion: v1
