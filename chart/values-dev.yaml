@@ -1,3 +1,5 @@
+environment: DEV
+
 frontend:
   replicas: 1
 

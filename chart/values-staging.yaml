@@ -1,3 +1,5 @@
+environment: STAGING
+
 frontend:
   replicas: 2
 
