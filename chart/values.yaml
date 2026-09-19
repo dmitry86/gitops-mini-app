@@ -2,7 +2,7 @@ frontend:
   replicas: 2
   image:
     repository: ghcr.io/dmitry86/gitops-mini-app-frontend
-    tag: "307ce7910c9713a1aaa6f94226cce548a14d31b0"
+    tag: "e1d57a950a516875fd4ba0d16c8cc9a572a9c463"
 
 backend:
   replicas: 1
