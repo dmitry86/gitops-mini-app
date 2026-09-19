@@ -5,4 +5,5 @@ backend:
   replicas: 1
 
 ingress:
-  enabled: false
+  enabled: true
+  host: staging.mini-app.local
